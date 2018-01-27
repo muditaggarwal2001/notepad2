@@ -1,6 +1,7 @@
 package com.example.mudit.notepad2;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,11 +12,15 @@ import android.widget.Switch;
 
 public class MainActivity extends AppCompatActivity {
     private GridView gridView ;
+    private DBHelperClass dbHelperClass;
+    private Cursor result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gridView = (GridView) findViewById(R.id.main_gridview);
+        dbHelperClass = new DBHelperClass(this);
+        result = dbHelperClass.getData();
     }
 
     @Override
