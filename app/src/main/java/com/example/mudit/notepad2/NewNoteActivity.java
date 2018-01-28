@@ -20,6 +20,7 @@ public class NewNoteActivity extends AppCompatActivity {
         title = (EditText)findViewById(R.id.note_title);
         note= (EditText)findViewById(R.id.note_desc);
         dbHelperClass = new DBHelperClass(this);
+        dbHelperClass.open();
         noteid=-2;
     }
 
@@ -37,12 +38,19 @@ public class NewNoteActivity extends AppCompatActivity {
                     noteid = dbHelperClass.insertData(title.getText().toString(), note.getText().toString(), null);
                     //Add picpath and imageview for images
                     if(noteid!=-1)
-                        Toast.makeText(NewNoteActivity.this, "Note Saved Successfully", Toast.LENGTH_LONG);
+                        Toast.makeText(NewNoteActivity.this, "Note Saved Successfully", Toast.LENGTH_LONG).show();
                     else
-                        Toast.makeText(NewNoteActivity.this, "Not enough memory", Toast.LENGTH_LONG);
+                        Toast.makeText(NewNoteActivity.this, "Not enough memory", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
+        finish();
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelperClass.close();
     }
 }

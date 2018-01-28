@@ -6,21 +6,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.GridView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
-    private GridView gridView ;
+    private ListView listView ;
     private DBHelperClass dbHelperClass;
     private Cursor result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gridView = (GridView) findViewById(R.id.main_gridview);
+        listView = (ListView) findViewById(R.id.main_listview);
         dbHelperClass = new DBHelperClass(this);
-        result = dbHelperClass.getData();
+        dbHelperClass.open();
     }
 
     @Override
@@ -38,5 +44,35 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        result=dbHelperClass.getData();
+        ArrayList buffer = new ArrayList<String>();
+        if(result.moveToNext())
+        {   startManagingCursor(result);
+            String[] from = {DBHelperClass.title, DBHelperClass.note};
+            int[] to = {R.id.viewtitle, R.id.notetext};
+            SimpleCursorAdapter mainActivitynote = new SimpleCursorAdapter(getApplicationContext(),R.layout.notelayout , result, from,to,0);
+                    // DataAdapter(this,result,0);
+                    //SimpleCursorAdapter(this,R.layout.notelayout , result, from,to,0);
+               /*if(result.moveToNext()) {
+                do {
+                    buffer.add(result.getString(1) + "\n" + result.getString(2));
+                } while (result.moveToNext());
+                ArrayAdapter mainActivitynote = new ArrayAdapter(getApplicationContext(), R.layout.notelayout);
+                */
+               listView.setAdapter(mainActivitynote);
+
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelperClass.close();
     }
 }

@@ -13,12 +13,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelperClass extends SQLiteOpenHelper {
 
     public static final String name = "note.db";
-    public static final String id = "ID";
+    public static final String id = "_ID";
     public static final String title = "Title";
     public static final String note = "Note";
     public static final String pics = "Pics";
     public static final String Table_Name = "notetable";
     public static final int version = 1;
+    SQLiteDatabase db;
     public DBHelperClass(Context context) {
         super(context, name, null, version);
     }
@@ -34,9 +35,18 @@ public class DBHelperClass extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void open()
+    {
+        db=this.getWritableDatabase();
+    }
+
+    public void close()
+    {
+        db.close();
+    }
+
     public long insertData(String ititle, String inote, String picpath)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(title,ititle);
         values.put(note,inote);
@@ -47,7 +57,6 @@ public class DBHelperClass extends SQLiteOpenHelper {
 
     public Cursor getData()
     {
-        SQLiteDatabase db = this.getWritableDatabase();
         Cursor result = db.rawQuery("Select * from "+Table_Name, null);
         return result;
     }
